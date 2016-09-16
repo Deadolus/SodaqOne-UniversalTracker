@@ -23,7 +23,7 @@
 #include "Utils.h"
 #include "Sodaq_wdt.h"
 
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 #define debugPrintLn(...) { if (this->diagStream) this->diagStream->println(__VA_ARGS__); }
@@ -310,7 +310,8 @@ bool Sodaq_RN2483::resetDevice()
         else if (strstr(this->inputBuffer, STR_DEVICE_TYPE_RN2903) != NULL) {
             debugPrintLn("The device type is RN2903");
             // TODO move into init once it is decided how to handle RN2903-specific operations
-            setFsbChannels(DEFAULT_FSB);
+            //setFsbChannels(DEFAULT_FSB);
+            setFsbChannels(0);
 
             return true;
         }

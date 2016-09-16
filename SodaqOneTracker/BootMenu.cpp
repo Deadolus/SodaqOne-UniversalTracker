@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "Command.h"
 #include "Config.h"
 
+#define FIRST_BOOT_MENU_TIMEOUT  (5 * 1000)
 #define BOOT_MENU_TIMEOUT  (30 * 1000)
 
 static VoidCallbackMethodPtr resetDevAddrOrEUItoHWEUICallback;
@@ -161,7 +162,7 @@ void showBootMenu(Stream& stream)
 {
     char buffer[200 + 1];
     int size;
-    uint32_t ts_max = millis() + BOOT_MENU_TIMEOUT;
+    uint32_t ts_max = millis() + FIRST_BOOT_MENU_TIMEOUT;
     bool needPrompt;
     bool seenCommand;
     uint8_t nrPrompts;

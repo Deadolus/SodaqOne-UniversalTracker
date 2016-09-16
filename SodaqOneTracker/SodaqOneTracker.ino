@@ -45,7 +45,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "GpsFixLiFoRingBuffer.h"
 #include "LSM303.h"
 
-//#define DEBUG
+#define DEBUG
 
 #define PROJECT_NAME "SodaqOne Universal Tracker"
 #define VERSION "2.0"
@@ -152,6 +152,7 @@ void updateConfigOverTheAir();
 void getHWEUI();
 void setDevAddrOrEUItoHWEUI();
 void onConfigReset(void);
+void(* resetFunc) (void) = 0;//declare reset function at address 0
 
 static void printCpuResetCause(Stream& stream);
 static void printBootUpMessage(Stream& stream);
@@ -162,6 +163,8 @@ void setup()
     // Allow power to remain on
     pinMode(ENABLE_PIN_IO, OUTPUT);
     digitalWrite(ENABLE_PIN_IO, HIGH);
+
+    pinMode(BUTTON, INPUT_PULLUP);
 
     lastResetCause = PM->RCAUSE.reg;
     sodaq_wdt_enable();
@@ -312,7 +315,8 @@ void transmit()
     setLoraActive(true);
 
     for (uint8_t i = 0; i < 1 + params.getRepeatCount(); i++) {
-        if (LoRaBee.send(1, sendBuffer, sendBufferSize) != 0) {
+        //if (LoRaBee.send(1, sendBuffer, sendBufferSize) != 0) {
+        if (LoRaBee.sendReqAck(1, sendBuffer, sendBufferSize, 5) != 0) {
             debugPrintln("There was an error while transmitting through LoRaWAN.");
         }
         else {
@@ -755,6 +759,9 @@ bool getGpsFixAndTransmit()
                 break;
             }
         }
+
+        if(!digitalRead(BUTTON))
+            resetFunc();
     }
 
     setGpsActive(false); // turn off gps as soon as it is not needed
