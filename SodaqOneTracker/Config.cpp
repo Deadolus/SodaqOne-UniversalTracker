@@ -71,7 +71,7 @@ void ConfigParams::read()
 
 void ConfigParams::reset()
 {
-    _defaultFixInterval = 15;
+    _defaultFixInterval = DEFAULT_FIX_INTERVAL;
     _alternativeFixInterval = 0;
     _alternativeFixFromHours = 0;
     _alternativeFixFromMinutes = 0;
@@ -79,21 +79,20 @@ void ConfigParams::reset()
     _alternativeFixToMinutes = 0;
     _gpsFixTimeout = 120;
 
-    memset(_devAddrOrEUI, 0x30, sizeof(_devAddrOrEUI) - 1);
-    _devAddrOrEUI[sizeof(_devAddrOrEUI) - 1] = '\0';
 
-    memset(_appSKeyOrEUI, 0x30, sizeof(_appSKeyOrEUI) - 1);
-    _appSKeyOrEUI[sizeof(_appSKeyOrEUI) - 1] = '\0';
+    strcpy(_devAddrOrEUI, DEFAULT_DEV);
+    strcpy(_appSKeyOrEUI, DEFAULT_APP_EUI);
+    strcpy(_nwSKeyOrAppKey, DEFAULT_APP_KEY);
 
-    memset(_nwSKeyOrAppKey, 0x30, sizeof(_nwSKeyOrAppKey) - 1);
-    _nwSKeyOrAppKey[sizeof(_nwSKeyOrAppKey) - 1] = '\0';
+    _isOtaaEnabled = DEFAULT_IS_OTAA_ENABLED;
+    _isLedEnabled = DEFAULT_IS_LED_ENABLED;
 
     _coordinateUploadCount = 1;
     _repeatCount = 0;
 
-    if (configResetCallback) {
+    /*if (configResetCallback) {
         configResetCallback();
-    }
+    }*/
 
     needsCommit = true;
 }
